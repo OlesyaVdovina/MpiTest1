@@ -1,0 +1,46 @@
+// MPITest.cpp: определяет точку входа для консольного приложения.
+//
+
+#include "stdafx.h"
+#include "stdlib.h"
+#include "stdio.h"
+#include "math.h"
+#include "mpi.h"
+#include <iostream>
+using namespace std;
+
+int main(int *argc, char **argv)
+{
+	double pi, sum = 0, sumr, i , N = 1000; //N - Number of iterations. The more iterations we use - the more exactly result we get
+	//sum - sum of each iteration
+	//sumr - result sum
+	MPI_Init(NULL, NULL); //Initialization MPI
+
+	int numproc; //Get number of process
+	MPI_Comm_size(MPI_COMM_WORLD, &numproc);
+
+	int procid;  //Get current process
+	MPI_Comm_rank(MPI_COMM_WORLD, &procid);
+
+	for (i = procid*(N / numproc) + 1; i < (procid + 1)*(N / numproc) + 1; i++)
+	    //The row of Laibnits
+		sum = sum + (1 / (1 + pow(((i - 1 / 2.0) / N), 2)));
+
+	if (procid != 0)//Comtinue increase value
+		MPI_Ssend(&sum, 1, MPI_DOUBLE, 0, i, MPI_COMM_WORLD);
+	else
+	{   //Get result value
+		pi = (1 / N)*sum*4;
+		sumr = pi;
+		for ( i = 1; i < numproc; i++)
+		{  
+			//Get value from sen and use them to find result pi
+			MPI_Recv(&sum, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			pi = (1 / N)*sum*4;//The Laibnits rule
+			sumr = sumr + pi;
+		}
+		cout << "pi:" << sumr;
+	}
+	MPI_Finalize();
+	return 0;
+}
