@@ -48,7 +48,7 @@ int main(int *argc, char **argv)
 	MPI_Barrier(MPI_COMM_WORLD);
 	timer_end = MPI_Wtime();
 	////////////////////////////////////new 
-	if (procid == 0) //id if main process
+	if (procid == 0) //id of main process
 	cout << "Total time of work:" << timer_end - timer_start;
 	////////////////////////////////////new 
 	MPI_Finalize();
