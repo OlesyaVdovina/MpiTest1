@@ -15,12 +15,10 @@ int main(int *argc, char **argv)
 	//sum - sum of each iteration
 	//sumr - result sum
 	
-	////////////////////////////////////new 
 	double timer_start, timer_end, time_rslt;
 	MPI_Init(NULL, NULL); //Initialization MPI
 	MPI_Barrier(MPI_COMM_WORLD); //Each processes will be sleeping whlile all commands will not be called
 	timer_start = MPI_Wtime();
-	////////////////////////////////////new 
 	
 	int numproc; //Get number of process
 	MPI_Comm_size(MPI_COMM_WORLD, &numproc);
@@ -47,11 +45,11 @@ int main(int *argc, char **argv)
 		}
 		cout << "pi:" << sumr;
 	}
-	////////////////////////////////////new 
 	MPI_Barrier(MPI_COMM_WORLD);
 	timer_end = MPI_Wtime();
-	time_rslt = timer_end - timer_start;
-	cout << "Time of work:" << time_rslt;
+	////////////////////////////////////new 
+	if (procid == 0) //id if main process
+	cout << "Total time of work:" << timer_end - timer_start;
 	////////////////////////////////////new 
 	MPI_Finalize();
 	return 0;
